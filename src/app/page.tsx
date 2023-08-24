@@ -1,95 +1,48 @@
-import Image from 'next/image'
+'use client'
+import { useState } from 'react'
+import { Category } from '../types'
 import styles from './page.module.css'
+import { getCategories } from './utils/helpers'
 
 export default function Home() {
+
+  const [categories, setCategories] = useState([])
+  const [subCategories, setSubCategories] = useState<Category[]>([])
+
+  const handleSelectCatgory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const changedValue = e.target.value
+    const activeCategory = categories.find((item: any) => item.id == changedValue)
+    const { children }: any = activeCategory
+    setSubCategories(children || [])
+  }
+
+  // get data from api direct includes feature with next 13 insted getStaticProps
+  getCategories().then((categories) => setCategories(categories.data.categories))
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      <form className={styles.form}>
+        <p className={styles.label}>Parent Catergory</p>
+        <select onChange={handleSelectCatgory} className={styles.select}>
+          <option>Select --</option>
+          {categories.map((category: Category | any, index) => (
+            <option className={styles.option} key={index} value={category.id}>{category.name}</option>
+          ))}
+        </select>
+        <p className={styles.label}>Select Sub-Category</p>
+        <select className={styles.select}>
+          <option>Select --</option>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          {subCategories.map((subCategory: Category | any, index) => (
+            <option className={styles.option} key={index} value={subCategory}>{subCategory.name}</option>
+          ))}
+        </select>
+      </form>
     </main>
   )
 }
+
+
+ 
+
+ 
